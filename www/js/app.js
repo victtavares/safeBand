@@ -49,9 +49,6 @@ app.run(function($ionicPlatform,$rootScope,$state) {
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
-
-
-
   });
 
   $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams) {

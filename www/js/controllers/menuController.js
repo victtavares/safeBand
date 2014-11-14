@@ -1,8 +1,9 @@
 var safeBandCtrl = angular.module('controllers.menu',[]);
 
-safeBandCtrl.controller('menuCtrl',function($scope,$state) {
+safeBandCtrl.controller('menuCtrl',function($scope,$state,$rootScope) {
 
     $scope.logout = function() {
-       $state.go("login");
+        $rootScope.firebaseRef.unauth();
+        $state.go("login");
     }
 });
