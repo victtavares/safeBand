@@ -25,9 +25,25 @@ safeBandCtrl.controller('registerCtrl', function ($scope,$ionicModal,$rootScope,
                 password : password
             }, function(error) {
                 if (error === null) {
-                    $ionicLoading.hide();
-                    $scope.modal.hide();
-                    $state.go('app.main');
+                    //Authenticating the user
+                    $rootScope.firebaseRef.authWithPassword({
+                        email: email,
+                        password: password
+                    }, function (error, authData) {
+                        if (error === null) {
+                            $ionicLoading.hide();
+                            $scope.modal.hide();
+                            $state.go('app.main');
+                        } else {
+                            $ionicLoading.hide();
+                            $ionicPopup.alert({
+                                title: error.code,
+                                template: error.message,
+                                okText: 'Cancel'
+                            });
+                        }
+                    });
+
                 } else {
                     $ionicLoading.hide();
                     $ionicPopup.alert({

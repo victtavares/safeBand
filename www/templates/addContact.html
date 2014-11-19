@@ -1,0 +1,29 @@
+<div class="modal" ng-controller="addContactCtrl">
+
+    <!-- Modal header bar -->
+    <ion-header-bar>
+        <h1 class="title">New Contact</h1>
+        <button class="button button-clear button-positive" ng-click="closeAddContact()">Cancel</button>
+        <button class="button button-clear button-positive" ng-click="saveContact()">Done</button>
+    </ion-header-bar>
+
+
+    <!-- Modal content area -->
+    <ion-content class="content-bg" >
+
+        <form ng-submit="addContact()">
+            <div class="list">
+                <label class="item item-input">
+                    <span class="input-label">Name</span>
+                    <input type="text" ng-model="contactData.name">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Email</span>
+                    <input type="text" ng-model="contactData.email">
+                </label>
+            </div>
+        </form>
+
+    </ion-content>
+
+</div>

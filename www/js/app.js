@@ -28,7 +28,9 @@ var app = angular.module('safeBand', [
   'controllers.login',
   'controllers.register',
   'controllers.main',
-  'controllers.menu'
+  'controllers.menu',
+  'controllers.contactList',
+  'controllers.addContact'
   ]);
 
 
@@ -54,12 +56,13 @@ app.run(function($ionicPlatform,$rootScope,$state) {
   $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams) {
     $rootScope.firebaseURL = "https://safeband.firebaseio.com";
     $rootScope.firebaseRef = new Firebase($rootScope.firebaseURL);
+    $rootScope.userEmail = null;
 
     if (toState.name == 'login') {
       $rootScope.firebaseRef.onAuth(function(authData) {
         if (authData) {
           // user authenticated with Firebase
-          console.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
+          $rootScope.userEmail = authData.password.email;
           event.preventDefault();
           $state.go('app.main');
         } else {
@@ -97,6 +100,17 @@ app.config(function($stateProvider, $urlRouterProvider) {
           "menuContent" :{
             templateUrl: "templates/main.html",
             controller:'mainCtrl'
+          }
+        }
+      })
+
+
+      .state('app.contactList', {
+        url: "/contactList",
+        views: {
+          "menuContent" :{
+            templateUrl: "templates/contactList.html",
+            controller:'contactListCtrl'
           }
         }
       });
