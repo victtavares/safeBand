@@ -35,15 +35,12 @@ var app = angular.module('safeBand', [
 
 
 
-app.run(function($ionicPlatform,$rootScope,$state) {
+app.run(function($ionicPlatform,$rootScope,$state,$http) {
 
 
 
   // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
   // for form inputs)
-
-
-
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -53,23 +50,68 @@ app.run(function($ionicPlatform,$rootScope,$state) {
     }
   });
 
-  $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams) {
-    $rootScope.firebaseURL = "https://safeband.firebaseio.com";
-    $rootScope.firebaseRef = new Firebase($rootScope.firebaseURL);
-    $rootScope.userEmail = null;
+  //Convert the HTTP method to a format that php can understand
+  //http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/
+  $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
-    if (toState.name == 'login') {
-      $rootScope.firebaseRef.onAuth(function(authData) {
-        if (authData) {
-          // user authenticated with Firebase
-          $rootScope.userEmail = authData.password.email;
+  var param = function(obj) {
+    var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
+
+    for(name in obj) {
+      value = obj[name];
+
+      if(value instanceof Array) {
+        for(i=0; i<value.length; ++i) {
+          subValue = value[i];
+          fullSubName = name + '[' + i + ']';
+          innerObj = {};
+          innerObj[fullSubName] = subValue;
+          query += param(innerObj) + '&';
+        }
+      }
+      else if(value instanceof Object) {
+        for(subName in value) {
+          subValue = value[subName];
+          fullSubName = name + '[' + subName + ']';
+          innerObj = {};
+          innerObj[fullSubName] = subValue;
+          query += param(innerObj) + '&';
+        }
+      }
+      else if(value !== undefined && value !== null)
+        query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+    }
+
+    return query.length ? query.substr(0, query.length - 1) : query;
+  };
+
+  // Override $http service's default transformRequest
+  $http.defaults.transformRequest = [function(data) {
+    return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
+  }];
+
+  $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams) {
+    if (!$rootScope.firebaseURL && !$rootScope.userEmail) {
+      $rootScope.firebaseURL = "https://safeband.firebaseio.com";
+      $rootScope.firebaseRef = new Firebase($rootScope.firebaseURL);
+      $rootScope.userEmail = null;
+    }
+
+
+    $rootScope.firebaseRef.onAuth(function(authData) {
+      if (authData) {
+        var email = authData.password.email;
+        $rootScope.userEmail = email;
+        if (toState.name == "login") {
           event.preventDefault();
           $state.go('app.main');
-        } else {
-          console.log("user is logout");
         }
-      });
-    }
+      } else {
+        $rootScope.userEmail = null;
+      }
+    });
+
+
 
   });
 
