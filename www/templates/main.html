@@ -1,13 +1,42 @@
-<ion-nav-bar class="bar-positive nav-title-slide-ios7">
+<ion-nav-bar class="bar-dark nav-title-slide-ios7">
 </ion-nav-bar>
 <ion-view title="SafeBand" hide-back-button="true">
     <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-content class="has-header content-bg">
-        <button class="button button-block button-assertive" ng-click="sendAlert()">
-            Panic Button
-        </button>
+        <h3 class="padding-top" style="text-align: center;">Status</h3>
+        <div class="list list-inset">
+
+            <div class="item">
+                <span>Bluetooth Name</span>
+                <span style="float:right">safeBand</span>
+            </div>
+            <div class="item">
+                <span>Bluetooth Status</span>
+                <span style="float:right">Connected</span>
+            </div>
+            <div class="item">
+                <span>Last Alert:</span>
+                <span style="float:right">{{data.lastAlert}}</span>
+            </div>
+
+
+
+        </div>
+        <hr class="horizontal-break">
+
+        <div class="padding">
+            <h5 class="padding-bottom" style="text-align: center">In a dangerous situation? Press the button!</h5>
+            <button class="button button-block button-assertive" ng-click="sendAlert()">
+                Panic Button
+            </button>
+        </div>
+
+
+
+
+
 
     </ion-content>
 </ion-view>
