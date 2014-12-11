@@ -22,9 +22,7 @@ earthService.factory('serviceMail', function($http, localStorage) {
 
                 }
             }
-            var d = new Date();
-            var time = d.toLocaleString();
-            localStorage.set("lastAlert",time);
+
 
              return $http.post('http://sendemail-safeband.rhcloud.com/sendEmail.php',
                 {to: to, subject: subject, message:message}, {timeout: 3000});

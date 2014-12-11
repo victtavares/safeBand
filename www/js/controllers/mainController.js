@@ -5,15 +5,18 @@ safebandCtrl.controller('mainCtrl',function($rootScope, $scope, $firebase, $http
     var sync = $firebase(ref);
     var contacts = sync.$asArray();
     $scope.data  = {};
-    $scope.data.lastAlert = localStorage.get("lastAlert","noAlert");
+    $scope.data.lastAlert = localStorage.get("lastAlert","No Alert");
 
 
 
 
     $scope.sendAlert = function() {
-        $scope.data.lastAlert = localStorage.get("lastAlert","noAlert");
         serviceMail.sendMail(contacts)
             .success( function(data) {
+                var d = new Date();
+                var time = d.toLocaleString();
+                localStorage.set("lastAlert",time);
+                $scope.data.lastAlert = time;
                 $ionicPopup.alert({
                             title: 'Alert e-mail was sent to all your contacts!'
                     });
