@@ -12,15 +12,19 @@
             <h1 class="title">Menu</h1>
         </header>
         <ion-content class="has-header">
-                <ion-list><ion-item nav-clear menu-close href="#/app/main">
-                    Home
-                </ion-item>
-                <ion-item nav-clear menu-close href="#/app/contactList">
-                    Contacts
-                </ion-item>
-                <ion-item nav-clear menu-close href="#/" ng-click="logout()">
-                    Logout
-                </ion-item>
+                <ion-list>
+                    <a class="item nav-clear menu-close item-icon-left menuTabs" nav-clear menu-close href="#/app/main">
+                        <i class="icon ion-home"></i>
+                        Home
+                    </a>
+                    <a class="item nav-clear menu-close item-icon-left menuTabs" nav-clear menu-close href="#/app/contactList">
+                        <i class="icon ion-person"></i>
+                        Contacts
+                        </a>
+                    <a class="item nav-clear menu-close item-icon-left menuTabs" nav-clear menu-close href="#/" ng-click="logout()">
+                        <i class="icon ion-log-out"></i>
+                        Logout
+                    </a>
             </ion-list>
         </ion-content>
     </ion-side-menu>

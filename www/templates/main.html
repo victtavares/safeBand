@@ -14,16 +14,17 @@
             </div>
             <div class="item">
                 <span>Bluetooth Status</span>
-                <span style="float:right">Connected</span>
+                <span style="float:right">{{data.status}}</span>
             </div>
             <div class="item">
                 <span>Last Alert:</span>
                 <span style="float:right">{{data.lastAlert}}</span>
             </div>
-
-
-
         </div>
+        <div class="padding">
+            <button class="button button-block button-dark" ng-click="connectBluetooth()"> {{data.buttonName}} </button>
+        </div>
+
         <hr class="horizontal-break">
 
         <div class="padding">
@@ -32,11 +33,5 @@
                 Panic Button
             </button>
         </div>
-
-
-
-
-
-
     </ion-content>
 </ion-view>
