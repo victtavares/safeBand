@@ -3,14 +3,11 @@ var safeBandCtrl = angular.module('controllers.contactList',["firebase"]);
 safeBandCtrl.controller('contactListCtrl', function ($scope,$ionicModal,$rootScope,$ionicLoading,$ionicPopup,$firebase) {
 
 
-    ref = new Firebase($rootScope.firebaseRef + "/contacts");
+    var URL = $rootScope.firebaseRef + "/contacts";
+    var ref = new Firebase(URL).orderByChild("user_email").equalTo($rootScope.userEmail);
     var sync = $firebase(ref);
     var contacts = sync.$asArray();
     $scope.contacts = contacts;
-    // ---------------------- Loading Modal ---------------------
-    //$ionicModal.fromTemplateUrl('templates/addContact.html', function(modal) {
-    //    $scope.modal = modal;
-    //}, {});
 
 
     $ionicModal.fromTemplateUrl('templates/addContact.html', {

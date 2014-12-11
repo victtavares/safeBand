@@ -1,7 +1,9 @@
 var safebandCtrl = angular.module('controllers.main',['services.mail','service.localStorage','services.bluetooth']);
 
 safebandCtrl.controller('mainCtrl',function($rootScope, $scope, $firebase, $http,serviceMail,localStorage,$ionicLoading,$ionicPopup,bluetooth,$interval,$state) {
-    ref = new Firebase($rootScope.firebaseRef + "/contacts");
+
+    var URL = $rootScope.firebaseRef + "/contacts";
+    var ref = new Firebase(URL).orderByChild("user_email").equalTo($rootScope.userEmail);
     var sync = $firebase(ref);
     var contacts = sync.$asArray();
     $scope.data  = {};
@@ -81,27 +83,34 @@ safebandCtrl.controller('mainCtrl',function($rootScope, $scope, $firebase, $http
     }
 
     $scope.connectBluetooth = function() {
-        $ionicLoading.show({
-            template: 'Loading...'
-        });
-        var macAddress = "00:06:66:6A:D1:C1";
-        var name = "safeBand";
-        var promiseConnect = bluetooth.connect(macAddress,name,$rootScope.isConnect);
-        promiseConnect.then(function(message) {
-            $scope.data.status = "Connected";
-            $scope.data.buttonName = "Disconnect";
-            $ionicPopup.alert({ title: message });
-            $rootScope.isConnect = true;
-            $ionicLoading.hide();
-            bluetoothSerial.subscribe("\n", onMessage, errorSubscribe);
 
-        }, function(reason) {
-            $scope.data.status = "Disconnected";
-            $scope.data.buttonName = "Connect";
-            $rootScope.isConnect = false;
-            $ionicPopup.alert({ title: reason });
+        try {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+            var macAddress = "00:06:66:6A:D1:C1";
+            var name = "safeBand";
+            var promiseConnect = bluetooth.connect(macAddress,name,$rootScope.isConnect);
+            promiseConnect.then(function(message) {
+                $scope.data.status = "Connected";
+                $scope.data.buttonName = "Disconnect";
+                $ionicPopup.alert({ title: message });
+                $rootScope.isConnect = true;
+                $ionicLoading.hide();
+                bluetoothSerial.subscribe("\n", onMessage, errorSubscribe);
+
+            }, function(reason) {
+                $scope.data.status = "Disconnected";
+                $scope.data.buttonName = "Connect";
+                $rootScope.isConnect = false;
+                $ionicPopup.alert({ title: reason });
+                $ionicLoading.hide();
+            });
+        } catch (e) {
             $ionicLoading.hide();
-        });
+            $ionicPopup.alert({ title: "Your device doesn't support a bluetooth connection"});
+        }
+
 
     }
 });
