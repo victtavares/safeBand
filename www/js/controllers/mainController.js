@@ -51,24 +51,45 @@ safebandCtrl.controller('mainCtrl',function($rootScope, $scope, $firebase, $http
     $scope.data.lastAlert = localStorage.get("lastAlert","No Alert");
 
     $scope.sendAlert = function() {
+
+
         $ionicLoading.show({
             template: 'Loading...'
         });
-        serviceMail.sendMail(contacts)
-            .success( function(data) {
-                $ionicPopup.alert({ title: 'Alert e-mail was sent to all your contacts!'});
-                var d = new Date();
-                var time = d.toLocaleString();
-                localStorage.set("lastAlert",time);
-                $scope.data.lastAlert = time;
-            })
-            .error(function() {
-                $ionicPopup.alert({
-                    title: 'Error- Try again Later!'
-                });
-            });
+        var onSuccess = function(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
 
-        $ionicLoading.hide();
+            serviceMail.sendMail(contacts,latitude,longitude)
+                .success( function(data) {
+                    $ionicPopup.alert({ title: 'Alert e-mail was sent to all your contacts!'});
+                    var d = new Date();
+                    var time = d.toLocaleString();
+                    localStorage.set("lastAlert",time);
+                    $scope.data.lastAlert = time;
+                })
+                .error(function() {
+                    $ionicPopup.alert({
+                        title: 'Error- Try again Later!'
+                    });
+                });
+
+            $ionicLoading.hide();
+
+        };
+
+        // onError Callback receives a PositionError object
+        //
+        function onError(error) {
+            $ionicPopup.alert({ title: 'Error - We could not get your Location'});
+            $ionicLoading.hide();
+        }
+
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+
+
+
 
     }
 
